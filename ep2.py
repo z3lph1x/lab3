@@ -1,50 +1,56 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
 df = pd.read_csv('flights.csv')
 del df['Unnamed: 0']
 print(df)
+a = []
+JumboW = 0
+MediumW = 0
+NimbleW = 0
+JumboP = 0
+MediumP = 0
+NimbleP = 0
 
-df2 = df.groupby('CARGO').sum()
-print(df2)
-JP = df2.iloc[0, 0]
-MP = df2.iloc[1, 0]
-NP = df2.iloc[2, 0]
-JW = df2.iloc[0, 1]
-MW = df2.iloc[1, 1]
-NW = df2.iloc[2, 1]
-J = 0
-M = 0
-N = 0
+for i in range(len(df.index)):
+    a.append(df.loc[i, 'CARGO'])
+    if df.loc[i, 'CARGO'] == 'Jumbo':
+        JumboW += df.loc[i, 'WEIGHT']
+        JumboP += df.loc[i, 'PRICE']
+    elif df.loc[i, 'CARGO'] == 'Medium':
+        MediumW += df.loc[i, 'WEIGHT']
+        MediumP += df.loc[i, 'PRICE']
+    elif df.loc[i, 'CARGO'] == 'Nimble':
+        NimbleW += df.loc[i, 'WEIGHT']
+        NimbleP += df.loc[i, 'PRICE']
 
-for i in range(650):
-	if (df.loc[i,'CARGO']=='Jumbo'):
-		J+=1
-	if (df.loc[i,'CARGO']=='Medium'):
-		M+=1
-	if (df.loc[i,'CARGO']=='Nimble'):
-		N+=1
+Jumbo = a.count('Jumbo')
+Medium = a.count('Medium')
+Nimble = a.count('Nimble')
 
-PRICE = {'Jumbo': JP, 'Medium': MP, 'Nimble': NP}
-fig, ax = plt.subplots(1,3)
+gr1 = {'Jumbo': Jumbo, 'Medium': Medium, 'Nimble': Nimble}
+x1 = list(gr1.keys())
+y1 = list(gr1.values())
 
-ax[1].bar(range(len(PRICE)), list(PRICE.values()))
-ax[1].set_xticks(range(len(PRICE)))
-ax[1].set_xticklabels(list(PRICE.keys()))
-ax[1].set_title('PRICE')
+gr2 = {'Jumbo': JumboW, 'Medium': MediumW, 'Nimble': NimbleW}
+x2 = list(gr2.keys())
+y2 = list(gr2.values())
 
-WEIGHT = {'Jumbo': JW, 'Medium': MW, 'Nimble': NW}
+gr3 = {'Jumbo': JumboP, 'Medium': MediumP, 'Nimble': NimbleP}
+x3 = list(gr3.keys())
+y3 = list(gr3.values())
 
-ax[2].bar(range(len(WEIGHT)), list(WEIGHT.values()))
-ax[2].set_xticks(range(len(WEIGHT)))
-ax[2].set_xticklabels(list(WEIGHT.keys()))
-ax[2].set_title('WEIGHT')
+fig, ax = plt.subplots(1, 3)
 
-NUMBER = {'Jumbo': J, 'Medium': M, 'Nimble': N}
 
-ax[0].bar(range(len(NUMBER)), list(NUMBER.values()))
-ax[0].set_xticks(range(len(NUMBER)))
-ax[0].set_xticklabels(list(NUMBER.keys()))
-ax[0].set_title('NUMBER')
+ax[0].bar(x1, y1)
+ax[0].set_title('Number of flights')
 
+ax[1].bar(x2, y2)
+ax[1].set_title('Total weight')
+
+ax[2].bar(x3, y3)
+ax[2].set_title('Total price')
 plt.show()
+
